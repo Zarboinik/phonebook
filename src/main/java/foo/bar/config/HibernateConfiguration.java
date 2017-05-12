@@ -9,6 +9,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
+import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 
@@ -18,7 +19,7 @@ import java.util.Properties;
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(value = "foo.bar.config")
-@PropertySource(value = { "classpath:application.properties" })
+@PropertySource(value = {"classpath:application.properties"})
 public class HibernateConfiguration {
 
     @Autowired
@@ -38,8 +39,8 @@ public class HibernateConfiguration {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(environment.getRequiredProperty("jdbc.driverClassName"));
         dataSource.setUrl(environment.getRequiredProperty("jdbc.url"));
-        dataSource.setUsername("dataSource.username");
-        dataSource.setPassword("dataSource.password");
+        dataSource.setUsername(environment.getRequiredProperty("dataSource.username"));
+        dataSource.setPassword(environment.getRequiredProperty("dataSource.password"));
         return dataSource;
     }
 

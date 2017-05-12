@@ -1,33 +1,24 @@
 package foo.bar.config;
 
-import org.springframework.web.filter.CharacterEncodingFilter;
-import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
+import org.springframework.web.WebApplicationInitializer;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
+import org.springframework.web.servlet.DispatcherServlet;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRegistration;
 
-import javax.servlet.Filter;
+public class Initializator implements WebApplicationInitializer {
 
-public class Initializator extends AbstractAnnotationConfigDispatcherServletInitializer {
+    public void onStartup(ServletContext container) throws ServletException {
 
-    @Override
-    protected Class<?>[] getRootConfigClasses() {return new Class<?>[]{AppConfig.class};}
+        AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
+        ctx.register(AppConfig.class);
+        ctx.setServletContext(container);
 
-    @Override
-    protected Class<?>[] getServletConfigClasses() {
-        return new Class<?>[]{};
+        ServletRegistration.Dynamic servlet = container.addServlet(
+                "dispatcher", new DispatcherServlet(ctx));
+
+        servlet.setLoadOnStartup(1);
+        servlet.addMapping("/");
     }
-
-    @Override
-    protected String[] getServletMappings() {
-        return new String[]{"/"};
-    }
-
-    @Override
-    protected Filter[] getServletFilters() {
-
-        CharacterEncodingFilter encodingFilter = new CharacterEncodingFilter();
-        encodingFilter.setEncoding("UTF-8");
-        encodingFilter.setForceEncoding(true);
-
-        return new Filter[]{encodingFilter};
-    }
-
 }
